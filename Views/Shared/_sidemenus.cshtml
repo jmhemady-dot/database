@@ -1,0 +1,89 @@
+﻿@using ADNU_CFRS.Repository
+
+@{
+    var isAuthenticated = AccountHelper.IsAuthenticated;
+    var userInfo = isAuthenticated ? AccountHelper.GetUserDetails : null;
+    var roleId = userInfo?.group.role?.role_id ?? 0;
+
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    var employeeType = LookUpHelper.GetEmployeeType(userInfo.person.person_id);
+
+    Func<string, string> LinkActive = action =>
+currentAction == action ? "active" : "";
+}
+
+<ul class="navbar-nav main-nav">
+    @if (AccountHelper.IsAuthenticated && roleId == 1)
+    {
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("Index")" href="@Url.Action("Index","Account")">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Home</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("ManageUsers")" href="@Url.Action("ManageUsers","SystemAdmin")">
+                <i class="fas fa-users nav-icon"></i>
+                <span>Manage Users</span>
+            </a>
+        </li>
+    }
+    else if (AccountHelper.IsAuthenticated && userInfo.person.person_type == 2)
+    {
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("Index")" href="@Url.Action("Index","Account")">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Home</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("CreateReservation")" href="@Url.Action("CreateReservation","Student")">
+                <i class="fas fa-question nav-icon"></i>
+                <span>Create Reservation</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("MyReservations")" href="@Url.Action("MyReservations","Student")">
+                <i class="fas fa-calendar nav-icon"></i>
+                <span>My Reservations</span>
+            </a>
+        </li>
+    }
+    else if (AccountHelper.IsAuthenticated && userInfo.person.person_type == 3 && employeeType == 2)
+    {
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("Index")" href="@Url.Action("Index","Account")">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Home</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("ManageReservation")" href="@Url.Action("ManageReservation","Admin")">
+                <i class="fas fa-calendar nav-icon"></i>
+                <span>Manage Reservation</span>
+            </a>
+        </li>
+    }
+    else if (AccountHelper.IsAuthenticated && userInfo.person.person_type == 3 && employeeType == 3)
+    {
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("Index")" href="@Url.Action("Index","Account")">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Home</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @LinkActive("ManageResources")" href="@Url.Action("ManageResources","Personnel")">
+                <i class="fas fa-cubes nav-icon"></i>
+                <span>Manage Resources</span>
+            </a>
+        </li>
+    }
+</ul>

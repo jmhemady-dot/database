@@ -1,0 +1,73 @@
+﻿@model ADNU_CFRS.Models.ViewModels.PersonnelVM
+
+@if (Model.resources != null && Model.resources.Count > 0)
+{
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-2">
+            <div class="table-responsive">
+                <table id="tableData" class="table table-sm w-100 text-nowrap">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Resource ID</th>
+                            <th>Resource Name</th>
+                            <th>Description</th>
+                            <th class="text-center">Condition</th>
+                            <th class="text-center">Resource Type</th>
+                            <th class="text-center">Availability</th>
+                            <th class="text-center font-weight-bold ">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model.resources)
+                        {
+                            <tr>
+                                <td class="text-center ">@x.resource_id.ToString("000")</td>
+                                <td>@x.resource_name</td>
+                                <td>@x.resource_description</td>
+                                <td class="text-center">@x.resource_condition</td>
+                                <td class="text-center">@x.resource_type_desc</td>
+                                <td class="text-center ">
+                                    <span class="badge @x.status_badge">@x.status_desc</span>
+                                </td>
+                                <td class="text-center ">
+                                    <a href="@Url.Action("EditResource", "Personnel", new { resource_id = x.resource_id})"
+                                       class="btn btn-xs btn-outline-secondary py-0 px-2" onclick="ShowLoading()">
+                                        Edit
+                                    </a>
+
+                                    <button type="button"
+                                            class="btn btn-xs btn-outline-danger py-0 px-2"
+                                            onclick="confirmDelete(@x.resource_id)">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-users-slash fa-3x mb-3"></i>
+        <p class="mb-0">No users found.</p>
+    </div>
+}
+
+
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $('#tableData').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "pageLength": 25,
+            "autoWidth": false,
+        });
+    });
+</script>

@@ -1,0 +1,96 @@
+﻿@model ADNU_CFRS.Models.ViewModels.AdminVM
+
+
+@{
+    ViewBag.Title = "ReservationList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0" style="margin-top: 10px">
+                <div class="card-header text-primary d-flex justify-content-between align-items-center" id="card-table-hearder">
+                    <label class="mb-0">
+                        MANAGE RESERVATIONS
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div id="alert-section" class="alert d-none" role="alert">
+                        Message
+                    </div>
+                    <div id="partial-table-view">
+                        @Html.Partial("~/Views/Admin/ManageReservation/_ReservationTable.cshtml", Model)
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function confirmApproved(reservation_id) {
+        showConfirmation({
+            title: "Approve Reservation #" + reservation_id + "?",
+            message: "Continue Processing?",
+            subMessage: "",
+            confirmText: "Yes, Approve",
+            confirmClass: "btn-success",
+            icon: "fa-check",
+            iconColor: "text-success",
+            onConfirm: function () {
+                ApproveReservation(reservation_id);
+            }
+        });
+    }
+
+    function ApproveReservation(reservation_id) {
+
+        $.ajax({
+            url: '@Url.Action("ProcessReservation", "Admin")',
+            type: 'POST',
+            data: { reservation_id: reservation_id, status: 1 },
+            success: function (data) {
+                $("#partial-table-view").html(data);
+            },
+            error: function (xhr, status, error) {
+                showAlert("Something went wrong. Please try again.", "error");
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    function confirmDisapproved(reservation_id) {
+        showConfirmation({
+            title: "Disapprove Reservation #" + reservation_id + "?",
+            message: "Continue Processing?",
+            subMessage: "",
+            confirmText: "Yes, Reject",
+            confirmClass: "btn-danger",
+            icon: "fa-trash",
+            iconColor: "text-danger",
+            onConfirm: function () {
+                DisapproveReservation(reservation_id);
+            }
+        });
+    }
+
+    function DisapproveReservation(reservation_id) {
+
+        $.ajax({
+            url: '@Url.Action("ProcessReservation", "Admin")',
+            type: 'POST',
+            data: { reservation_id: reservation_id, status: 2 },
+            success: function (data) {
+                $("#partial-table-view").html(data);
+            },
+            error: function (xhr, status, error) {
+                showAlert("Something went wrong. Please try again.", "error");
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
+

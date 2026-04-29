@@ -1,0 +1,27 @@
+﻿<html>
+<head>
+    <title>ADNU - CFRS</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="~/adminlte/css/adminlte.min.css" rel="stylesheet" />
+    <link href="~/adminlte/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="hold-transition login-page text-sm">
+    <div>
+        @RenderBody()
+    </div>
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/adminlte/js/adminlte.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

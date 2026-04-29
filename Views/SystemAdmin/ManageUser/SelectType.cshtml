@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "SelectType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0" style="margin-top: 10px">
+                <div class="card-header text-primary d-flex justify-content-between align-items-center" id="card-table-hearder">
+                    <label class="mb-0">
+                        SELECT USER TYPE
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div id="alert-section" class="alert d-none" role="alert">
+                        Message
+                    </div>
+
+                    <div class="bg-light p-3 rounded mb-3 shadow-sm">
+                        <div class="row align-items-start">
+                            <div class="col-md-12">
+                                <label class="text-muted">User Type</label>
+                                <select class="form-control form-control-sm" id="userType">
+                                    <option value="2">Student</option>
+                                    <option value="3">Employee</option>
+                                    <option value="4">External</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-gray-light d-flex justify-content-end">
+                    <a href="@Url.Action("ManageUsers", "SystemAdmin")"
+                       class="btn btn-default btn-sm mr-2"
+                       title="Back"
+                       onclick="ShowLoading()"
+                       id="card-button-footer">
+                        <i class="fa fa-arrow-left mr-1"></i> Back
+                    </a>
+
+                    <button type="button"
+                            id="card-button-footer"
+                            class="btn btn-default btn-sm mr-2"
+                            onclick="Proceed()">
+                        <i class="fa fa-check"></i> Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function Proceed() {
+        var user_type = document.getElementById("userType").value;
+
+        window.location.href = "@Url.Action("SelectUserType", "SystemAdmin")" + "?user_type=" + user_type;
+    }
+</script>

@@ -1,0 +1,38 @@
+﻿@model ADNU_CFRS.Models.ViewModels.StudentVM
+@{
+    ViewBag.Title = "MyReservation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0" style="margin-top: 10px">
+                <div class="card-header text-primary d-flex justify-content-between align-items-center" id="card-table-hearder">
+                    <label class="mb-0">
+                        MY RESERVATIONS
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div id="alert-section" class="alert d-none" role="alert">
+                        Message
+                    </div>
+
+                    <div id="partial-table-view">
+                        @Html.Partial("~/Views/Student/_ReservationTable.cshtml", Model)
+                    </div>
+                </div>
+                <div class="card-footer bg-gray-light d-flex justify-content-end">
+                    <a href="@Url.Action("CreateReservation", "Student")"
+                       class="btn btn-default btn-sm mr-2"
+                       title="Back"
+                       onclick="ShowLoading()"
+                       id="card-button-footer">
+                        <i class="fa fa-arrow-left mr-1"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

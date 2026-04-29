@@ -1,0 +1,121 @@
+﻿@model ADNU_CFRS.Models.ViewModels.PersonnelVM
+@{
+    ViewBag.Title = "ResourceList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0" style="margin-top: 10px">
+                <div class="card-header text-primary d-flex justify-content-between align-items-center" id="card-table-hearder">
+                    <label class="mb-0">
+                        MANAGE RESOURCES
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div id="alert-section" class="alert d-none" role="alert">
+                        Message
+                    </div>
+
+                    <div class="bg-light p-3 rounded mb-3 shadow-sm">
+                        <div class="row align-items-start">
+                            <div class="col-md-2">
+                                <label class="text-muted">Resource Type</label>
+                                <select class="form-control form-control-sm" id="resource_type">
+                                    <option value="1">Facility</option>
+                                    <option value="2">Vehicle</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <button type="button"
+                                        class="btn btn-default btn-sm btn-block"
+                                        id="btn-load"
+                                        style="color:blue; margin-top:30px;"
+                                        onclick="LoadData()">
+                                    <span class="btn-text">Load Data</span>
+                                    <span class="btn-spinner spinner-border spinner-border-sm ml-1 d-none"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="partial-table-view">
+                        @Html.Partial("~/Views/Personnel/ManageResource/_ResourcesTable.cshtml", Model)
+                    </div>
+                </div>
+                <div class="card-footer bg-gray-light d-flex justify-content-end">
+                    <a href="@Url.Action("AddResource", "Personnel")"
+                       class="btn btn-default btn-sm mr-2"
+                       title="Add Staff"
+                       onclick="ShowLoading()"
+                       id="card-button-footer">
+                        <i class="fa fa-plus"></i> Add Resource
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function LoadData() {
+        setButtonLoading("#btn-load", "Loading...");
+
+        var resource_type = document.getElementById("resource_type").value;
+
+        var formData = new FormData();
+        formData.append("resource_type", resource_type);
+
+
+        $.ajax({
+            url: '@Url.Action("LoadResourceList", "Personnel")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $("#partial-table-view").html(data);
+            },
+            error: function (xhr, status, error) {
+                showAlert("Something went wrong. Please try again.", "error");
+                console.error(xhr.responseText);
+            },
+            complete: function () {
+                resetButton("#btn-load", "Load Data");
+            }
+        });
+    }
+
+    function confirmDelete(resource_id) {
+        showConfirmation({
+            title: "Delete Resource #" + resource_id + "?",
+            message: "Continue Deleting?",
+            subMessage: "",
+            confirmText: "Yes, Delete",
+            confirmClass: "btn-danger",
+            icon: "fa-trash",
+            iconColor: "text-danger",
+            onConfirm: function () {
+                DeleteUser(resource_id);
+            }
+        });
+    }
+
+    function DeleteUser(resource_id) {
+        var resource_type = document.getElementById("resource_type").value;
+        $.ajax({
+            url: '@Url.Action("DeleteResource", "Personnel")',
+            type: 'POST',
+            data: { resource_id: resource_id, resource_type: resource_type },
+            success: function (data) {
+                $("#partial-table-view").html(data);
+            },
+            error: function (xhr, status, error) {
+                showAlert("Something went wrong. Please try again.", "error");
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>

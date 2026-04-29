@@ -1,0 +1,112 @@
+﻿@model ADNU_CFRS.Models.ViewModels.LoginVM
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+@using (Html.BeginForm("UserAuth", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="login-box" style="margin-top: 5%;">
+        <div class="card card-outline card-primary shadow" style="width:400px; margin:auto;">
+
+            <div class="card-header text-center">
+                <img src="~/adminlte/img/adnu.png"
+                     class="img-circle"
+                     width="160"
+                     height="160"
+                     style="border:none; margin-bottom: 20px; object-fit: cover; border-radius: 50%;" />
+                <h4 class="mt-0 mb-1">
+                    <strong>ADNU - CFRS</strong>
+                </h4>
+                <p class="text-muted mb-0">Campus Facility Reservation System</p>
+            </div>
+
+            <div class="card-body">
+
+                <p class="login-box-msg">Sign in to start your session</p>
+
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                @if (Model != null && Model.status != ADNU_CFRS.Models.EnumUserStatus.Default)
+                {
+                    <div class="alert alert-default-danger text-center">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        @Model.message
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.username)
+                    @Html.TextBoxFor(m => m.username,
+                        new
+                        {
+                            @class = "form-control",
+                            placeholder = "Enter username",
+                            autocomplete = "off",
+                            autofocus = "autofocus"
+                        })
+                    @Html.ValidationMessageFor(m => m.username, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.password)
+                    <div class="input-group">
+                        @Html.PasswordFor(m => m.password,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter password",
+                                id = "passwordField",
+                            })
+
+                        <div class="input-group-append">
+                            <span class="input-group-text" style="cursor:pointer"
+                                  onclick="togglePassword()">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.password, "", new { @class = "text-danger" })
+                </div>
+
+                <br />
+                <!-- Login Button -->
+                <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                    <span id="btnText">Login</span>
+                    <span id="btnLoading" style="display:none;">
+                        <i class="fas fa-spinner fa-spin"></i> Signing in...
+                    </span>
+                </button>
+
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts{
+    <script>
+        function togglePassword() {
+            var password = document.getElementById("passwordField");
+            var icon = document.getElementById("toggleIcon");
+
+            if (password.type === "password") {
+                password.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                password.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        $("form").submit(function () {
+            $("#btnText").hide();
+            $("#btnLoading").show();
+        });
+    </script>
+}
+

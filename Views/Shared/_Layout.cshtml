@@ -1,0 +1,338 @@
+﻿@using ADNU_CFRS.Repository
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>ADNU - CFRS</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
+    <script src="~/adminlte/plugins/moment/moment.min.js"></script>
+    <script src="~/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+
+
+    <link href="~/adminlte/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/adminlte/plugins/fontawesome-free/css/all.min.css" />
+    <link href="~/adminlte/css/adminlte.min.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <link href="~/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/adminlte/plugins/toast/dist/css/toasting.css" rel="stylesheet" />
+    <script src="~/adminlte/plugins/toastr/toastr.min.js"></script>
+    <link href="~/adminlte/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" />
+    <link href="~/adminlte/css/masterStyle.css" rel="stylesheet" />
+</head>
+<body class="hold-transition layout-top-nav" style="font-size: 14px;">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand-md" style="background-color: #373A40 ">
+            <div class="container-fluid px-4">
+                <a href="@Url.Action("Index", "Account")"
+                   class="navbar-brand d-flex align-items-center text-blue">
+
+                    <img src="~/adminlte/img/adnu.png" alt="Logo" class="img-circle mr-3" style="height: 45px;">
+
+                    <span class="brand-text-small font-weight-bold">
+                        ADNU -CFRS
+                    </span>
+                </a>
+
+                <div class="navbar-nav main-nav ml-4">
+                    @Html.Partial("~/Views/Shared/_sidemenus.cshtml")
+                </div>
+
+                <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                    @if (AccountHelper.IsAuthenticated)
+                    {
+                        var userInfo = AccountHelper.GetUserDetails;
+
+                        <li class="nav-item dropdown user-menu">
+                            <a class="nav-link d-flex align-items-center" data-toggle="dropdown" href="#">
+
+                                <div class="avatar-wrapper">
+                                    <img src="~/adminlte/img/user.png" class="avatar-img">
+                                    <span class="status-dot"></span>
+                                </div>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right user-dropdown">
+                                <div class="user-header text-center">
+                                    <img src="~/adminlte/img/user.png" class="avatar-lg mb-3">
+
+                                    <h6 class="mb-1 font-weight-bold">@userInfo.person.firstname</h6>
+
+                                    <small class="text-danger" style="margin-top: -10px;">@userInfo.person.person_type_desc</small>
+                                </div>
+
+                                <div class="dropdown-divider"></div>
+
+                                <!-- Logout -->
+                                <a class="dropdown-item logout-item" href="@Url.Action("Logout","Account")" id="btnLogOut">
+                                    <i class="fas fa-sign-out-alt mr-1"></i>
+                                    Logout
+                                </a>
+
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- LOADING MODAL -->
+    <div class="modal" id="mdlPrgBar">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body bg-gray-light" style="text-align: center">
+                    <div>
+                        <img src="~/adminlte/img/loadingbar.gif" style="width: 20px; height: 20px;" />
+                        Loading Please wait...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL CONFIRMATION MODAL -->
+    <div class="modal fade" id="global-confirm-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 14px;">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title" id="confirmTitle">Confirmation</h6>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+
+                <div class="modal-body text-center pt-2 pb-3">
+                    <div class="mb-3">
+                        <div style="width: 70px; height: 70px; margin: 0 auto; border-radius: 50%; background: rgba(40,167,69,0.1); display: flex; align-items: center; justify-content: center;">
+                            <i id="confirmIcon" class="fa fa-question text-success" style="font-size: 26px;"></i>
+                        </div>
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark" id="confirmMessage"> Are you sure? </h6>
+
+                    <small class="text-muted d-block" id="confirmSubMessage"></small>
+                </div>
+
+                <div class="modal-footer border-0 pt-0 justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal" id="confirmCancelBtn">Cancel</button>
+                    <button type="button" class="btn btn-success px-4" id="confirmActionBtn">Confirm</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- EXCEL FORMAT MODAL -->
+    <div id="ImageModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-sm border-0">
+
+                <div class="modal-header py-2">
+                    <h6 class="modal-title font-weight-bold" id="modalTitle">Preview</h6>
+
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <img id="modalImage"
+                         src=""
+                         class="img-fluid rounded shadow-sm"
+                         style="max-width:80%;"
+                         onclick="window.open(this.src)">
+
+                </div>
+
+                <div class="modal-footer py-2">
+                    <button class="btn btn-secondary btn-sm" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @* LOADING MODAL *@
+    <div class="modal fade" id="globalLoadingModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content text-center p-4">
+
+                <div class="mb-3">
+                    <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;"></div>
+                </div>
+
+                <h5 class="mb-2" id="loadingTitle">Loading...</h5>
+                <p class="text-muted mb-0" id="loadingMessage">Please wait.</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // ================= GLOBAL MODAL =================
+        function showConfirmation(options) {
+            var defaults = {
+                title: "Confirmation", message: "Are you sure?", subMessage: "", confirmText: "Confirm", confirmClass: "btn-success", icon: "fa-question", iconColor: "text-success",
+                onConfirm: function () { }
+            };
+
+            var settings = Object.assign({}, defaults, options);
+
+            // Set content
+            $("#confirmTitle").text(settings.title);
+            $("#confirmMessage").text(settings.message);
+            $("#confirmSubMessage").text(settings.subMessage);
+
+            $("#confirmIcon").attr("class", "fa " + settings.icon + " " + settings.iconColor);
+
+            var $actionBtn = $("#confirmActionBtn");
+
+            $actionBtn.removeClass().addClass("btn px-4 " + settings.confirmClass).text(settings.confirmText);
+
+            // Remove previous click handlers
+            $actionBtn.off("click");
+
+            // Add new handler
+            $actionBtn.on("click", function () {
+                var btn = $(this);
+
+                btn.addClass("btn-loading");
+                btn.html('<span class="spinner-border spinner-border-sm"></span> Processing...');
+
+                $("#confirmCancelBtn").prop("disabled", true);
+
+                var result = settings.onConfirm();
+
+                if (result && typeof result.then === "function") {
+
+                    result.then(function () {
+                        $("#global-confirm-modal").modal("hide");
+
+                    }).catch(function () {
+                        btn.removeClass("btn-loading");
+                        btn.text(settings.confirmText);
+                        $("#confirmCancelBtn").prop("disabled", false);
+
+                    });
+
+                } else {
+                    $("#global-confirm-modal").modal("hide");
+                }
+            });
+
+            $('#global-confirm-modal').on('hidden.bs.modal', function () {
+                $actionBtn.removeClass("btn-loading");
+                $("#confirmCancelBtn").prop("disabled", false);
+            });
+
+            $("#global-confirm-modal").modal("show");
+        }
+
+        // ================= LOADING MODAL =================
+        function showLoadingModal(title, message) {
+            document.getElementById("loadingTitle").innerText = title || "Loading...";
+            document.getElementById("loadingMessage").innerText = message || "Please wait.";
+
+            $("#globalLoadingModal").modal("show");
+        }
+
+        function hideLoadingModal() {
+            $("#globalLoadingModal").modal("hide");
+        }
+
+        // ================= SPINNER LOADER ================
+        function setButtonLoading(buttonId, textLoading = "Loading...") {
+            var btn = $(buttonId);
+            var text = btn.find(".btn-text");
+            var spinner = btn.find(".btn-spinner");
+
+            text.text(textLoading);
+            spinner.removeClass("d-none");
+            btn.prop("disabled", true);
+        }
+
+        function resetButton(buttonId, textDefault = "Load Data") {
+            var btn = $(buttonId);
+            var text = btn.find(".btn-text");
+            var spinner = btn.find(".btn-spinner");
+
+            text.text(textDefault);
+            spinner.addClass("d-none");
+            btn.prop("disabled", false);
+        }
+
+        // ================= SESSION TIMER =================
+        var sessionTimeout = 15; // minutes
+        var warningTime = sessionTimeout * 60 * 1000;
+        var logoutTimer;
+
+        function startTimer() {
+            logoutTimer = setTimeout(function () {
+                window.location.href = '@Url.Action("Login", "Account")';
+            }, warningTime);
+        }
+
+        function resetTimer() {
+            clearTimeout(logoutTimer);
+            startTimer();
+        }
+
+        window.onload = startTimer;
+        document.onmousemove = resetTimer;
+        document.onclick = resetTimer;
+    </script>
+
+    <script src="~/Scripts/globals.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="~/adminlte/js/adminlte.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="~/adminlte/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/adminlte/plugins/jszip/jszip.min.js"></script>
+    <script src="~/adminlte/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/adminlte/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/adminlte/plugins/toast/dist/js/toasting.js"></script>
+    <script src="~/adminlte/plugins/toastr/toastr.min.js"></script>
+    <script src="~/adminlte/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

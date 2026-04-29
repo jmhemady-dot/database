@@ -1,0 +1,77 @@
+﻿@model ADNU_CFRS.Models.ViewModels.SystemAdminVM
+
+@if (Model.users != null && Model.users.Count > 0)
+{
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-2">
+            <div class="table-responsive">
+                <table id="tableData" class="table table-sm w-100 text-nowrap">
+                    <thead>
+                        <tr>
+                            <th class="text-center">User ID</th>
+                            <th>Name</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Role</th>
+                            <th class="text-center">User Type</th>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Contact #</th>
+                            <th class="font-weight-bold ">Email</th>
+                            <th class="text-center font-weight-bold ">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model.users)
+                        {
+                            <tr>
+                                <td class="text-center ">@x.account_id.ToString("000")</td>
+                                <td class="">@x.person.firstname @x.person.lastname</td>
+                                <td class="text-center ">
+                                    <span class="badge @x.status_badge">@x.status_desc</span>
+                                </td>
+                                <td class="text-center">@x.group.role.role_name</td>
+                                <td class="text-center">@x.person.person_type_desc</td>
+                                <td class="text-center ">@x.username</td>
+                                <td class="text-center">@x.person.contact_number</td>
+                                <td>@x.person.email_address</td>
+                                <td class="text-center ">
+                                    <a href="@Url.Action("EditUser", "SystemAdmin", new { person_id = x.person.person_id })"
+                                       class="btn btn-xs btn-outline-secondary py-0 px-2" onclick="ShowLoading()">
+                                        Edit
+                                    </a>
+
+                                    <button type="button"
+                                            class="btn btn-xs btn-outline-danger py-0 px-2"
+                                            onclick="confirmDelete(@x.person.person_id)">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-users-slash fa-3x mb-3"></i>
+        <p class="mb-0">No users found.</p>
+    </div>
+}
+
+
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $('#tableData').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "pageLength": 25,
+            "autoWidth": false,
+        });
+    });
+</script>

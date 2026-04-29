@@ -1,0 +1,226 @@
+﻿@using ADNU_CFRS.Repository
+
+@{
+    ViewBag.Title = "AddStudent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0" style="margin-top: 10px">
+                <div class="card-header text-primary d-flex justify-content-between align-items-center" id="card-table-hearder">
+                    <label class="mb-0">
+                        ADD STUDENT
+                    </label>
+                </div>
+                <div class="card-body">
+                    <div id="alert-section" class="alert d-none" role="alert">
+                        Message
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-muted font-weight-bold border-bottom pb-1">
+                                PERSONAL DETAILS
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="firstname" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="firstname">Firstname <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="lastname" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="lastname">Lastname <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="contactNum" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="contactNum">Contact# <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="email" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="email">Email <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-muted font-weight-bold border-bottom pb-1">
+                                EDUCATION DETAILS
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="course" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="course">Course <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="dept" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="dept">Department <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-floating mb-3">
+                                <input type="number" id="year_level" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="year_level">Year Lvl <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-muted font-weight-bold border-bottom pb-1">
+                                ACCOUNT DETAILS
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="username" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="username">Username <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" id="password" class="form-control form-control-sm" placeholder=" " autocomplete="off">
+                                <label for="password">Password <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select id="group_id" class="form-control form-control-sm">
+                                    <option value="0">Select User Group</option>
+                                    @foreach (var x in LookUpHelper.GetUserGroups())
+                                    {
+                                        <option value="@x.group_id">@x.group_name</option>
+                                    }
+                                </select>
+                                <label>User Group <strong class="text-danger">*</strong></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-gray-light d-flex justify-content-end">
+                    <a href="@Url.Action("AddUser", "SystemAdmin")"
+                       class="btn btn-default btn-sm mr-2"
+                       title="Back"
+                       onclick="ShowLoading()"
+                       id="card-button-footer">
+                        <i class="fa fa-arrow-left mr-1"></i> Back
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-default btn-sm"
+                            onclick="confirmSave()"
+                            id="card-button-footer">
+                        <i class="fa fa-save mr-1"></i> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function confirmSave() {
+        showConfirmation({
+            title: "Save New User",
+            message: "Continue Saving?",
+            subMessage: "",
+            confirmText: "Yes, Save",
+            confirmClass: "btn-success",
+            icon: "fa-save",
+            iconColor: "text-success",
+            onConfirm: function () {
+                SaveUser();
+            }
+        });
+    }
+
+    function SaveUser() {
+        var firstname = document.getElementById("firstname").value;
+        var lastname = document.getElementById("lastname").value;
+        var contactNum = document.getElementById("contactNum").value;
+        var email = document.getElementById("email").value;
+        var course = document.getElementById("course").value;
+        var dept = document.getElementById("dept").value;
+        var year_level = document.getElementById("year_level").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var group_id = document.getElementById("group_id").value;
+
+        if (firstname === "" || lastname === "" || contactNum === "" || email === "" || course === "" || dept === "" || year_level === "" || username === "" || password === "" || group_id === "0") {
+            showAlert("Please fill in all required fields.", "danger");
+            return false;
+        }
+        else {
+            var url = '@Url.Action("SaveStudent", "SystemAdmin")';
+            var formData = new FormData();
+            formData.append("firstname", firstname);
+            formData.append("lastname", lastname);
+            formData.append("contactNum", contactNum);
+            formData.append("email", email);
+            formData.append("course", course);
+            formData.append("dept", dept);
+            formData.append("year_level", year_level);
+            formData.append("username", username);
+            formData.append("password", password);
+            formData.append("group_id", group_id);
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                success: function (response) {
+                    showAlert(response.msg, response.result);
+
+                    if (response.result == "success") {
+                            setTimeout(function () {
+                            window.location = '@Url.Action("ManageUsers", "SystemAdmin")';
+                        }, 3000)
+                    }
+                },
+                error: function (xhr, status, error) {
+                    showAlert("Something went wrong. Please try again.", "error");
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    }
+</script>

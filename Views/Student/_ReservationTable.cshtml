@@ -1,0 +1,62 @@
+﻿@model ADNU_CFRS.Models.ViewModels.StudentVM
+
+@if (Model.reservations != null && Model.reservations.Count > 0)
+{
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-2">
+            <div class="table-responsive">
+                <table id="tableData" class="table table-sm w-100 text-nowrap">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Reservation ID</th>
+                            <th class="text-center">Date</th>
+                            <th>Purpose</th>
+                            <th class="text-center">Time</th>
+                            <th>Resources to Used</th>
+                            <th class="text-center">Requested by</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var x in Model.reservations)
+                        {
+                            <tr>
+                                <td class="text-center ">@x.reservation_id.ToString("000")</td>
+                                <td>@x.reservation_date.ToString("MM/dd/yyyy")</td>
+                                <td>@x.purpose</td>
+                                <td class="text-center">@x.start_time - @x.end_time</td>
+                                <td>@x.resource.resource_name</td>
+                                <td>@x.person.firstname @x.person.lastname</td>
+                                <td class="text-center ">
+                                    <span class="badge @x.status_badge">@x.status_desc</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-users-slash fa-3x mb-3"></i>
+        <p class="mb-0">No users found.</p>
+    </div>
+}
+
+
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $('#tableData').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "pageLength": 25,
+            "autoWidth": false,
+        });
+    });
+</script>
